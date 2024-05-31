@@ -37,6 +37,12 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Terraform Output
+        run: terraform output
+
       # Commented out the Apply step
       # - name: 'Apply Terraform'
       #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
