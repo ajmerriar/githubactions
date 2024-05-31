@@ -1,0 +1,48 @@
+name: 'Terraform AKS Deployment'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout GitHub Actions'
+        uses: actions/checkout@v3
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.0.0
+
+      - name: 'Terraform Init'
+        uses: hashicorp/terraform-github-actions@v2
+        with:
+          command: init
+
+      - name: 'Terraform Validate'
+        uses: hashicorp/terraform-github-actions@v2
+        with:
+          command: validate
+
+      - name: 'Terraform Plan'
+        id: plan
+        uses: hashicorp/terraform-github-actions@v2
+        with:
+          command: plan
+          args: '-out=tfplan'
+
+      # Commented out the Apply step
+      # - name: 'Terraform Apply'
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   uses: hashicorp/terraform-github-actions@v2
+      #   with:
+      #     command: apply
+      #     args: '-input=false -auto-approve tfplan'
