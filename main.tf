@@ -27,7 +27,6 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
       key_data = jsondecode(azapi_resource_action.ssh_public_key_gen.output).publicKey
     }
   }
-
   network_profile {
     network_plugin    = "kubenet"
     load_balancer_sku = "standard"
