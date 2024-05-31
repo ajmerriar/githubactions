@@ -32,7 +32,7 @@ output "cluster_username" {
 }
 
 output "host" {
-  value     = azurerm_kubernetes_cluster.k8s.kube_config[0].host
+  value     = azurerm_kubernetes_cluster.aks-cluster.kube_config[0].host
   sensitive = true
 }
 
