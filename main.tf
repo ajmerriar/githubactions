@@ -16,7 +16,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   default_node_pool {
     name       = "agentpool"
-    vm_size    = "Standard_D4ds_v5"
+    vm_size    = "Standard_D2_v2"
     node_count = var.node_count
   }
 
