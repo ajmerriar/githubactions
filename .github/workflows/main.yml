@@ -29,7 +29,13 @@ jobs:
         run: terraform validate
 
       - name: 'Plan Terraform'
-        run: terraform plan -out=tfplan
+        id: plan
+        run: terraform plan
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
 
       # Commented out the Apply step
       # - name: 'Apply Terraform'
