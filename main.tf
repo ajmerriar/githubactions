@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_kubernetes_cluster" "aks-cluster" {
   location            = azurerm_resource_group.rg.location
   name                = "terraform-aks"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = "aa"
 
   dns_prefix = "project-aks"
 
@@ -27,6 +27,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
       key_data = jsondecode(azapi_resource_action.ssh_public_key_gen.output).publicKey
     }
   }
+
   network_profile {
     network_plugin    = "kubenet"
     load_balancer_sku = "standard"
