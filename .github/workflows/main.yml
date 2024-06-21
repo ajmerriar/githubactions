@@ -63,8 +63,8 @@ jobs:
       - name: Install Helm
         id: install-helm
         uses: azure/setup-helm@v4
-        with:
-          version: 'v3.7.0'  # Specify the Helm version if needed
+        # with:
+        #   version: 'v3.7.0'  # Specify the Helm version if needed
 
       - name: Add Helm repo for ingress-nginx
         run: |
@@ -74,10 +74,12 @@ jobs:
       - name: Install NGINX Ingress Controller
         run: |
           helm install nginx-ingress ingress-nginx/ingress-nginx \
-            --namespace testingnamespace \
+            --namespace ingress --create-namespace \
             --set controller.replicaCount=2 \
-            --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-            --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+            --set controller.nodeSelector."kubernetes.io/os"=linux \
+            --set controller.admissionWebhooks.patch.nodeSelector."kubernetes.io/os"=linux \
+            --set defaultBackend.nodeSelector."kubernetes.io/os"=linux \
+            --debug
           kubectl get namespace
       - name: Verify NGINX Ingress Controller Installation
         run: |
