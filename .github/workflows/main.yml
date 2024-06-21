@@ -43,6 +43,9 @@ jobs:
       - name: Terraform Output
         run: terraform output
 
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
@@ -87,8 +90,7 @@ jobs:
           kubectl get pods -n ingress  # Check if Ingress Controller pods are running
           kubectl get svc -n ingress   # Check Ingress Controller services
 
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve
+
 
       # Commented out the Apply step
       # - name: 'Apply Terraform'
