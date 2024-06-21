@@ -67,6 +67,7 @@ jobs:
 
       - name: Add Helm repo for ingress-nginx
         run: |
+          helm init --client-only
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo update
 
