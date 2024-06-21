@@ -59,6 +59,26 @@ jobs:
         run: |
           az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
           kubectl get nodes
+          
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'latest'
+
+      - name: Add Helm repo for ingress-nginx
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+
+      - name: Install NGINX Ingress Controller
+        run: |
+          helm install nginx-ingress ingress-nginx/ingress-nginx \
+            --namespace ingress --create-namespace \
+            --set controller.replicaCount=2 \
+            --set controller.nodeSelector."kubernetes\.io/os"=linux \
+            --set controller.admissionWebhooks.patch.nodeSelector."kubernetes\.io/os"=linux \
+            --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux
+          kubectl get namespace
 
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
