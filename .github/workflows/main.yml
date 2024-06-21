@@ -74,12 +74,16 @@ jobs:
       - name: Install NGINX Ingress Controller
         run: |
           helm install nginx-ingress ingress-nginx/ingress-nginx \
-            --namespace ingress --create-namespace \
-            --set controller.replicaCount=2 \
-            --set controller.nodeSelector."kubernetes\.io/os"=linux \
-            --set controller.admissionWebhooks.patch.nodeSelector."kubernetes\.io/os"=linux \
-            --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux
+              --namespace ingress --create-namespace \
+              --set controller.replicaCount=1 \
+              --set controller.nodeSelector."kubernetes.io/os"=linux \
+              --set controller.admissionWebhooks.patch.nodeSelector."kubernetes.io/os"=linux \
+              --set defaultBackend.nodeSelector."kubernetes.io/os"=linux
           kubectl get namespace
+      - name: Verify NGINX Ingress Controller Installation
+        run: |
+          kubectl get pods -n ingress  # Check if Ingress Controller pods are running
+          kubectl get svc -n ingress   # Check Ingress Controller services
 
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
