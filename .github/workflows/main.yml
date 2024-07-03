@@ -74,10 +74,10 @@ jobs:
           kubectl create namespace ingress || true
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx || true
           # Install the Nginx Ingress controller with specified configurations
-          helm install my-nginx-ingress ingress-nginx/ingress-nginx \ || true
-            --namespace ingress \ || true
-            --set controller.replicaCount=2 \ || true
-            --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \ || true
+          helm install my-nginx-ingress ingress-nginx/ingress-nginx \ 
+            --namespace ingress \ 
+            --set controller.replicaCount=2 \ 
+            --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \ 
             --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux || true
           kubectl get namespace
       - name: Verify NGINX Ingress Controller Installation
