@@ -2,11 +2,11 @@ name: 'Terraform AKS Deployment'
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+    # branches:
+    #   - master
+  # pull_request:
+  #   branches:
+  #     - master
 
 jobs:
   terraform:
@@ -42,9 +42,6 @@ jobs:
 
       - name: Terraform Output
         run: terraform output
-
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -86,9 +83,19 @@ jobs:
           kubectl get pods -n ingress  # Check if Ingress Controller pods are running
           kubectl get svc -n ingress   # Check Ingress Controller services
 
+      - name: Install cert-manager
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
 
+          CERT_MANAGER_TAG=v1.3.1
+          kubectl label namespace ingress cert-manager.io/disable-validation=true
+          helm install cert-manager jetstack/cert-manager \
+            --namespace ingress --version $CERT_MANAGER_TAG \
+            --values helm/cert-manager-values.yaml
 
-      # Commented out the Apply step
-      # - name: 'Apply Terraform'
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   run: terraform apply -input=false -auto-approve tfplan
+      - name: Apply CA Cluster Issuer
+        run: kubectl apply -f k8s/cluster-issuer.yaml
+
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
