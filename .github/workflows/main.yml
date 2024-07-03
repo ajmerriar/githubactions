@@ -2,11 +2,11 @@ name: 'Terraform AKS Deployment'
 
 on:
   push:
-    # branches:
-    #   - master
-  # pull_request:
-  #   branches:
-  #     - master
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   terraform:
@@ -88,14 +88,17 @@ jobs:
           helm repo add jetstack https://charts.jetstack.io
           helm repo update
 
-          CERT_MANAGER_TAG=v1.3.1
-          kubectl label namespace ingress cert-manager.io/disable-validation=true
+          CERT_MANAGER_TAG=v1.14.3
           helm install cert-manager jetstack/cert-manager \
-            --namespace ingress --version $CERT_MANAGER_TAG \
-            --values helm/cert-manager-values.yaml
+            --namespace default --version $CERT_MANAGER_TAG \
+            --set installCRDs=true \
+            --set nodeSelector."kubernetes\.io/os"=linux
 
-      - name: Apply CA Cluster Issuer
-        run: kubectl apply -f k8s/cluster-issuer.yaml
+          kubectl label namespace default cert-manager.io/disable-validation=true
+
+      - name: Apply cert-manager resources
+        run: |
+          kubectl apply -f cert-manager.yml
 
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
