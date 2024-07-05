@@ -92,7 +92,7 @@ jobs:
           helm install cert-manager jetstack/cert-manager \
             --namespace default --version $CERT_MANAGER_TAG \
             --set installCRDs=true \
-            --set nodeSelector."kubernetes\.io/os"=linux
+            --set nodeSelector."kubernetes\.io/os"=linux || true
 
           kubectl label namespace default cert-manager.io/disable-validation=true
 
