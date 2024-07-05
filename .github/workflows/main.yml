@@ -80,8 +80,8 @@ jobs:
         run: |
           echo "Waiting for Ingress to be ready..."
           sleep 180 # Wait for 3 minutes
-          kubectl get pods -n ingress  # Check if Ingress Controller pods are running
-          kubectl get svc -n ingress   # Check Ingress Controller services
+          kubectl get pods -n default  # Check if Ingress Controller pods are running
+          kubectl get svc -n default   # Check Ingress Controller services
 
       - name: Install cert-manager
         run: |
@@ -112,6 +112,8 @@ jobs:
         run: |
           echo "Argo CD Initial Admin Password:"
           kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+          echo "Ingress IP Address:"
+          kubectl get svc -l app.kubernetes.io/name=ingress-nginx -n default -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}"
       
 
       # - name: Terraform Destroy
