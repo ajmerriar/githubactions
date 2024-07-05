@@ -100,5 +100,20 @@ jobs:
         run: |
           kubectl apply -f cert-manager.yml
 
+      - name: Install Argo CD
+        run: |
+          kubectl apply -n default -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+          
+      - name: Apply Ingress Resources
+        run: |
+          kubectl apply -f ingress.yml 
+          
+      - name: Argo CD Login
+        run: |
+          argocd login $(kubectl get service argocd-server -n argocd --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}') \
+            --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo) --insecure
+
+      
+
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
