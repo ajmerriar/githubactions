@@ -23,12 +23,12 @@ jobs:
       - name: Log in to Docker Hub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push front Docker image
+      - name: Build and push frontend Docker image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/todof:latest -f task-manager-frontend/Dockerfile task-manager-frontend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/todof:latest
 
-      - name: Build and push back Docker image
+      - name: Build and push backend Docker image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/todob:latest -f task-manager-backend/Dockerfile task-manager-backend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/todob:latest
